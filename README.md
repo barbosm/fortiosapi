@@ -1,5 +1,7 @@
 # fortiosAPI
 
+[![Documentation Status](https://readthedocs.org/projects/fortiosapi/badge/?version=latest)](https://fortiosapi.readthedocs.io/en/latest/?badge=latest)
+
 Python library to configure Fortinet devices (REST API and SSH)
 
 Compare to the REST API there a few add-ons:
