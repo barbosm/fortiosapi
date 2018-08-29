@@ -52,7 +52,11 @@ LOG = logging.getLogger('fortiosapi')
 
 
 class FortiOSAPI(object):
+
+    """finally I can change this"""
+
     def __init__(self):
+        """method docstring"""
         self._https = True
         self._fortiversion = "Version is set when logged"
         # reference the fortinet version of the targeted product.
@@ -62,6 +66,7 @@ class FortiOSAPI(object):
         # (can be changed to) self._session.verify = '/path/to/certfile'
 
     def logging(self, response):
+        ''' Send a multi line string via ssh to the fortigate '''
         try:
             LOG.debug("Request : %s on url : %s  ", response.request.method,
                       response.request.url)
@@ -72,10 +77,12 @@ class FortiOSAPI(object):
             LOG.warning("method errors in request when global")
 
     def debug(self, status):
+        """method docstring"""
         if status == 'on':
             LOG.setLevel(logging.DEBUG)
 
     def formatresponse(self, res, vdom=None):
+        """method docstring"""
         LOG.debug("formating response")
         self.logging(res)
         # Generic way to format the return from FortiAPI
@@ -91,12 +98,14 @@ class FortiOSAPI(object):
         return resp
 
     def https(self, status):
+        """method docstring"""
         if status == 'on':
             self._https = True
         if status == 'off':
             self._https = False
 
     def update_cookie(self):
+        """method docstring"""
         # Retrieve server csrf and update session's headers
         LOG.debug("cookies are  : %s ", self._session.cookies)
         for cookie in self._session.cookies:
@@ -107,6 +116,7 @@ class FortiOSAPI(object):
                 LOG.debug("csrftoken after update  : %s ", csrftoken)
 
     def login(self, host, username, password):
+        """method docstring"""
         self.host = host
         if self._https is True:
             self.url_prefix = 'https://' + self.host
@@ -131,9 +141,11 @@ class FortiOSAPI(object):
         # Might be wise to return the license status here
 
     def get_version(self):
+        """method docstring"""
         return self._fortiversion
 
     def get_mkey(self, path, name, vdom=None, data=None):
+        """method docstring"""
         # retreive the table mkey from schema
         schema = self.schema(path, name, vdom=None)
         try:
@@ -149,6 +161,7 @@ class FortiOSAPI(object):
         return mkey
 
     def logout(self):
+        """method docstring"""
         url = self.url_prefix + '/logout'
         res = self._session.post(url)
         self._session.close()
@@ -156,6 +169,7 @@ class FortiOSAPI(object):
         self.logging(res)
 
     def cmdb_url(self, path, name, vdom, mkey=None):
+        """method docstring"""
         # return builded URL
         url_postfix = '/api/v2/cmdb/' + path + '/' + name
         if mkey:
@@ -171,6 +185,7 @@ class FortiOSAPI(object):
         return url
 
     def mon_url(self, path, name, vdom=None, mkey=None):
+        """method docstring"""
         # return builded URL
         url_postfix = '/api/v2/monitor/' + path + '/' + name
         if mkey:
@@ -186,12 +201,14 @@ class FortiOSAPI(object):
         return url
 
     def monitor(self, path, name, vdom=None, mkey=None, parameters=None):
+        """method docstring"""
         url = self.mon_url(path, name, vdom, mkey)
         res = self._session.get(url, params=parameters)
         LOG.debug("in MONITOR function")
         return self.formatresponse(res, vdom=vdom)
 
     def download(self, path, name, vdom=None, mkey=None, parameters=None):
+        """method docstring"""
         url = self.mon_url(path, name)
         res = self._session.get(url, params=parameters)
         LOG.debug("in DOWNLOAD function")
@@ -199,6 +216,7 @@ class FortiOSAPI(object):
 
     def upload(self, path, name, vdom=None, mkey=None,
                parameters=None, data=None, files=None):
+        """method docstring"""
         url = self.mon_url(path, name)
         res = self._session.post(url, params=parameters,
                                  data=data, files=files)
@@ -206,6 +224,7 @@ class FortiOSAPI(object):
         return res
 
     def get(self, path, name, vdom=None, mkey=None, parameters=None):
+        """method docstring"""
         url = self.cmdb_url(path, name, vdom, mkey)
 
         res = self._session.get(url, params=parameters)
@@ -213,6 +232,7 @@ class FortiOSAPI(object):
         return self.formatresponse(res, vdom=vdom)
 
     def schema(self, path, name, vdom=None):
+        """method docstring"""
         # vdom or global is managed in cmdb_url
         if vdom is None:
             url = self.cmdb_url(path, name, vdom) + "?action=schema"
@@ -227,6 +247,7 @@ class FortiOSAPI(object):
             return json.loads(res.content.decode('utf-8'))
 
     def get_name_path_dict(self, vdom=None):
+        """method docstring"""
         # return builded URL
         url_postfix = '/api/v2/cmdb/'
         if vdom is None:
@@ -246,6 +267,7 @@ class FortiOSAPI(object):
 
     def post(self, path, name, vdom=None,
              mkey=None, parameters=None, data=None):
+        """method docstring"""
         if not mkey:
             mkey = self.get_mkey(path, name, vdom=vdom, data=data)
 
@@ -259,6 +281,7 @@ class FortiOSAPI(object):
 
     def put(self, path, name, vdom=None,
             mkey=None, parameters=None, data=None):
+        """method docstring"""
         if not mkey:
             mkey = self.get_mkey(path, name, vdom=vdom, data=data)
         url = self.cmdb_url(path, name, vdom, mkey)
@@ -269,6 +292,7 @@ class FortiOSAPI(object):
 
     def delete(self, path, name, vdom=None,
                mkey=None, parameters=None, data=None):
+        """method docstring"""
         # Need to find the type of the mkey to avoid error when integer assume
         # the other types will be ok.
         if not mkey:
@@ -284,6 +308,7 @@ class FortiOSAPI(object):
 # may add a force option to delete and redo if troubles.
     def set(self, path, name, vdom=None,
             mkey=None, parameters=None, data=None):
+        ''' do stuff '''
         # post with mkey will return a 404 as the next level is not there yet
         url = self.cmdb_url(path, name, vdom, mkey=mkey)
         if not mkey:
@@ -342,6 +367,7 @@ class FortiOSAPI(object):
         return (''.join(str(results)), ''.join(str(stderr)))
 
     def license(self):
+        """method docstring"""
         resp = self.monitor('license', 'status')
         if resp['status'] == 'success':
             return resp
@@ -355,6 +381,10 @@ class FortiOSAPI(object):
                 time.sleep(17)
                 return self.monitor('license', 'status')
 
+
+    def scale(self, factor):
+        """Return a new triangle, `factor` times the size of this one."""
+        return Triangle(self.a * factor, self.b * factor, self.c * factor)
 
 # Todo for license check and update
 # GET /api/v2/monitor/license/status

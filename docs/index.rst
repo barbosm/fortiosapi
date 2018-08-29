@@ -10,6 +10,8 @@ Welcome to FortiOS API's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   getting_started
+   reference
    about
 
 Indices and tables
